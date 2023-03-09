@@ -4,7 +4,6 @@ on:
     branches:
       - main
 jobs:
-
   deploy_source:
     name: deploy lambda from source
     runs-on: ubuntu-latest
@@ -24,13 +23,17 @@ jobs:
           pip install -r requirements.txt -t python
           zip -r9 python.zip ./python
 
+      - name: Package fuction code and layer
+        run: |
+          cd source
+          zip -r function.zip .
+
       - name: Deploy Lambda function with layer
         run: |
           aws lambda update-function-code \
             --function-name gitRepoTest \
-            --source source/* \
+            --zip-file fileb://function.zip \
             --publish
-          aws lambda update-function-configuration \
-            --function-name gitRepoTest \
-            --zip-file fileb://python.zip\
-            --layers arn:aws:lambda:us-east-1:684741729356:layer:testLayer:1
+          aws lambda publish-layer-version \
+            --layer-name testLayer \
+            --content python.zip
