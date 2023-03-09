@@ -17,7 +17,7 @@ def check_filename(presigned_url, file):
                 match = re.search(r'\((\d+)\)', key)
                 if match:
                     i = int(match.group(1)) + 1
-                    key = re.sub(r'\(\d+\)', f"({i})", key)
+                    key = re.sub(r'\(\d+\)', f"({i})", str(key))
                 else:
                     key = key.split(".")
                     key = f"{key[0]} (1).{key[1]}"
