@@ -10,12 +10,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: checkout source code
-        uses: actions/checkout@v1
-      - name: default deploy
+        uses: actions/checkout@v2
+      - name: Set up Python environment
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+      - name: Install dependencies
+        run: |
+          python -m venv myenv
+          source myenv/bin/activate
+          pip install -r requirements.txt
+      - name: Zip code
+        run: zip -r lambda.zip .
+      - name: Deploy to AWS Lambda
         uses: appleboy/lambda-action@master
         with:
           aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws_region: ${{ secrets.AWS_REGION }}
           function_name: gitRepoTest
-          source: source/*
+          source: lambda.zip
