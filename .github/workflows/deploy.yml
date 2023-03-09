@@ -27,6 +27,7 @@ jobs:
         run: |
           cd source
           zip -r function.zip .
+          cd ..
 
       - name: Deploy Lambda function with layer
         run: |
