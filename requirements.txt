@@ -1,1 +1,1 @@
-pip install pillow
+Pillow==9.4.0
