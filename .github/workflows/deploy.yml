@@ -24,16 +24,11 @@ jobs:
           pip install -r requirements.txt -t python
           zip -r9 python.zip ./python
 
-      - name: Package fuction code and layer
-        run: |
-          cd source
-          zip -r function.zip *
-
       - name: Deploy Lambda function with layer
         run: |
           aws lambda update-function-code \
             --function-name gitRepoTest \
-            --zip-file fileb://function.zip \
+            --source source/* \
             --publish
           aws lambda update-function-configuration \
             --function-name gitRepoTest \
