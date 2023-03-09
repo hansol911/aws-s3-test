@@ -17,7 +17,7 @@ def check_filename(presigned_url, file):
                 match = re.search(r'\((\d+)\)', key)
                 if match:
                     i = int(match.group(1)) + 1
-                    key = re.sub(r'\(\d+\)', f"({i})", str(key))
+                    key = re.sub(r'\(\d+\)', f"({i})", key)
                 else:
                     key = key.split(".")
                     key = f"{key[0]} (1).{key[1]}"
@@ -25,7 +25,7 @@ def check_filename(presigned_url, file):
                 break
 
         content = file['content']
-        type = file['type'].decode('utf-8')
+        type = str(file['type'].decode('utf-8'))
         
         s3.put_object(Bucket=bucket, Key=key, Body=content, ContentType=type)
         
