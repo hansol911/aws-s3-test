@@ -27,7 +27,6 @@ jobs:
       - name: Package fuction code and layer
         run: |
           zip -r function.zip source/*
-          zip -g function.zip python.zip
 
       - name: Deploy Lambda function with layer
         run: |
@@ -37,4 +36,5 @@ jobs:
             --publish
           aws lambda update-function-configuration \
             --function-name gitRepoTest \
+            --zip-file fileb://python.zip\
             --layers arn:aws:lambda:us-east-1:684741729356:layer:testLayer:1
