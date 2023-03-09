@@ -83,8 +83,6 @@ def validate_file(file, presignedURL):
         
     mime_type = magic.from_buffer(file['content'][:2048], mime=True)
     
-    print("&&&&&&&type : ", mime_type)
-    
     if mime_type not in mime_type_whitelist:
         return {'statusCode': 400, 'message': 'Not a valid mime type'}
        

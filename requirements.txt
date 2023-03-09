@@ -1,0 +1,4 @@
+requests_toolbelt
+requests
+regex
+python-magic
