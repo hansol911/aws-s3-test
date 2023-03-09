@@ -17,6 +17,7 @@ jobs:
           python-version: '3.9'
       - name: Install dependencies
         run: |
+          cd source
           python -m venv myenv
           source myenv/bin/activate
           pip install -r requirements.txt
