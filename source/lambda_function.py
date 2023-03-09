@@ -1,45 +1,49 @@
-import json
 import boto3
-import test
-from PIL import Image
-from io import BytesIO
+import json
+import base64
+from requests_toolbelt.multipart import decoder
+import validate
+import upload
 
 def lambda_handler(event, context):
-    s3 = boto3.client('s3')
-
-    bucket = event['queryStringParameters']['bucket']
-    path = event['queryStringParameters']['path']
-    thumb = path.split(".")
-    thumb_path = thumb[0] + "_thumb." + thumb[1]
+    content_type_header = event['headers']['content-type']
+    files = get_multipart_file(event['body'], content_type_header)
     
-    in_mem_file = BytesIO()
-
-    obj = s3.get_object(Bucket=bucket, Key=path)
-    img = Image.open(BytesIO(obj['Body'].read()))
-
-    width, height = img.size
-    if width > height:
-        ratio = width/height
-        new_width = 300
-        new_height = int(300/ratio)
-    else:
-        ratio = height/width
-        new_width = int(300/ratio)
-        new_height = 300
+    result = validate.validate_file(files[1], files[2])
+    if result['statusCode'] != 200:
+        return create_response(result)
+        
+    # err = upload.upload_file_to_s3(files[1], files[2])
+    # if err != None:
+    #     return create_response({'statusCode': 400, 'message': 'File S3 Upload Failed!'})
     
-    img.thumbnail((new_width, new_height), Image.ANTIALIAS)
-    img.save(in_mem_file, format=img.format)
-    in_mem_file.seek(0)
+    return create_response(result)
     
-    s3.put_object(Bucket=bucket, Key=thumb_path, Body=in_mem_file, ContentType=obj['ContentType'])
-
-
-    result = test.test_str('abc')
+def get_multipart_file(files, content_type):
+    decode_files = []
+    try:
+        postdata = base64.b64decode(files)
+        for part in decoder.MultipartDecoder(postdata, content_type).parts:
+            disposition = part.headers[b'Content-Disposition']
+            params = {}
+            for dispPart in str(disposition).split(';'):
+                kv = dispPart.split('=', 2)
+                params[str(kv[0]).strip()] = str(kv[1]).strip('\"\'\t \r\n') if len(kv)>1 else str(kv[0]).strip()
+            type = part.headers[b'Content-Type'] if b'Content-Type' in part.headers else None
+            decode_files.append({'content': part.content, "type": type, "params": params})
+    except Exception as err:
+        return 'Invalid File. Unable to decode it. Error : ' + str(err)
+    
+    return decode_files 
+    
+def create_response(result):
     return {
-        'statusCode': 200,
-        'body': result,
-        'headers': {
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*'
+        "statusCode": result['statusCode'],
+        "body": json.dumps({
+            "result": result['message']}),
+        "headers": {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*"
         }
     }
+    
