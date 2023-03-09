@@ -26,7 +26,8 @@ jobs:
 
       - name: Package fuction code and layer
         run: |
-          zip -r function.zip source/*
+          cd source
+          zip -r function.zip *
 
       - name: Deploy Lambda function with layer
         run: |
