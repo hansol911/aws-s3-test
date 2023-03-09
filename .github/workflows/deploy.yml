@@ -21,8 +21,6 @@ jobs:
           python -m venv myenv
           source myenv/bin/activate
           pip install -r requirements.txt
-      - name: Zip code
-        run: zip -r lambda.zip .
       - name: Deploy to AWS Lambda
         uses: appleboy/lambda-action@master
         with:
@@ -30,4 +28,4 @@ jobs:
           aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws_region: ${{ secrets.AWS_REGION }}
           function_name: gitRepoTest
-          zip_file: lambda.zip
+          zip_file: source/*
