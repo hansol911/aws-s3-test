@@ -2,7 +2,7 @@ name: deploy to lambda
 on:
   push:
     branches:
-      - main
+      - test
 jobs:
   deploy_source:
     name: deploy lambda from source
@@ -21,7 +21,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: '3.9'
+          python-version: "3.9"
 
       - name: Install dependencies and build layer
         run: |
@@ -41,6 +41,9 @@ jobs:
             --function-name gitRepoTest \
             --zip-file fileb://function.zip \
             --publish
+
+      - name: Deploy Lambda function with layer2
+        run: |
           aws lambda publish-layer-version \
             --layer-name testLayer \
             --content fileb://python.zip \
