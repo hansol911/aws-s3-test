@@ -47,6 +47,6 @@ jobs:
         run: |
           aws lambda publish-layer-version \
             --layer-name testLayer \
-            --description 'test' \
-            --content fileb://python.zip \
+            --description 'layer version1' \
+            --content fileb://./python.zip \
             --compatible-runtimes 'python3.9'
