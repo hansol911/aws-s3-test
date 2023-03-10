@@ -23,13 +23,13 @@ def get_multipart_file(files, content_type):
     decode_files = []
     try:
         postdata = base64.b64decode(files)
-        for str(part) in decoder.MultipartDecoder(postdata, content_type).parts:
+        for part in decoder.MultipartDecoder(postdata, content_type).parts:
             disposition = part.headers[b'Content-Disposition']
             params = {}
-            for str(dispPart) in str(disposition).split(';'):
+            for dispPart in str(disposition).split(';'):
                 kv = dispPart.split('=', 2)
                 params[str(kv[0]).strip()] = str(kv[1]).strip('\"\'\t \r\n') if len(kv)>1 else str(kv[0]).strip()
-            type = str(part.headers[b'Content-Type']) if b'Content-Type' in part.headers else None
+            type = part.headers[b'Content-Type'] if b'Content-Type' in part.headers else None
             decode_files.append({'content': part.content, "type": type, "params": params})
     except Exception as err:
         return 'Invalid File. Unable to decode it. Error : ' + str(err)
