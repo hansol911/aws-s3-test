@@ -20,14 +20,15 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v2
         with:
           python-version: '3.9'
 
       - name: Install dependencies and build layer
         run: |
           pip install -r requirements.txt -t python
-          zip -r9 python.zip ./python
+          cd python && zip -r9 ../python.zip .
+          cd ..
 
       - name: Package function code
         run: |
@@ -46,5 +47,6 @@ jobs:
         run: |
           aws lambda publish-layer-version \
             --layer-name testLayer \
-            --content fileb://./python.zip \
+            --description "test" \
+            --content fileb://python.zip \
             --compatible-runtimes python3.9
