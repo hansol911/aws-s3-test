@@ -31,5 +31,11 @@ jobs:
 
       - name: Deploy Lambda function with layer
         run: |
-          aws lambda update-function-code --function-name gitRepoTest --zip-file fileb://function.zip --publish
-          aws lambda publish-layer-version --layer-name testLayer --content fileb://python.zip --compatible-runtimes python3.9
+          aws lambda update-function-code \
+            --function-name gitRepoTest \
+            --zip-file fileb://function.zip \
+            --publish
+          aws lambda publish-layer-version \
+            --layer-name testLayer \
+            --content fileb://python.zip \
+            --compatible-runtimes python3.9
