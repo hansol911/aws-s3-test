@@ -25,7 +25,7 @@ def check_filename(presigned_url, file):
                 break
 
         content = file['content']
-        type = str(file['type'].decode('utf-8'))
+        type = file['type'].decode('utf-8')
         
         s3.put_object(Bucket=bucket, Key=key, Body=content, ContentType=type)
         
