@@ -48,4 +48,4 @@ jobs:
           aws lambda publish-layer-version \
             --layer-name testLayer \
             --content fileb://python.zip \
-            --compatible-runtimes python3.9
+            --compatible-runtimes "python3.9"
