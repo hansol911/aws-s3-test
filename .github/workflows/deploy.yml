@@ -22,13 +22,13 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: '3.9'
+          python-version: "3.9"
 
       - name: Install dependencies and build layer
         run: |
+          python -m pip install --upgrade pip
           pip install -r requirements.txt -t python
-          cd python && zip -r9 ../python.zip .
-          cd ..
+          zip -r9 python.zip ./python
 
       - name: Package function code
         run: |
@@ -47,6 +47,6 @@ jobs:
         run: |
           aws lambda publish-layer-version \
             --layer-name testLayer \
-            --description "test" \
+            --description 'test' \
             --content fileb://python.zip \
-            --compatible-runtimes python3.9
+            --compatible-runtimes 'python3.9'
