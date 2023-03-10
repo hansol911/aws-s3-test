@@ -83,7 +83,7 @@ def validate_file(file, presignedURL):
         
     mime_type = magic.from_buffer(file['content'][:2048], mime=True)
     
-    if mime_type not in mime_type_whitelist:
+    if str(mime_type) not in mime_type_whitelist:
         return {'statusCode': 400, 'message': 'Not a valid mime type'}
        
     # file 용량 제한 (100MB) ## todo : 서버에 검증요청

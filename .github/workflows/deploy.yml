@@ -23,7 +23,7 @@ jobs:
           pip install -r requirements.txt -t python
           zip -r9 python.zip ./python
 
-      - name: Package fuction code and layer
+      - name: Package function code and layer
         run: |
           cd source
           zip -r ../function.zip ./*
