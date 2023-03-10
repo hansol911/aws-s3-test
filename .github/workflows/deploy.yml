@@ -36,17 +36,23 @@ jobs:
           zip -r ../function.zip ./*
           cd ..
 
-      - name: Deploy Lambda function with layer
+      - name: Deploy Lambda function
         run: |
           aws lambda update-function-code \
             --function-name gitRepoTest \
             --zip-file fileb://function.zip \
             --publish
 
-      - name: Deploy Lambda function with layer2
+      - name: Deploy Lambda layer
         run: |
           aws lambda publish-layer-version \
             --layer-name testLayer \
-            --description 'layer version1' \
-            --content fileb://./python.zip \
-            --compatible-runtimes 'python3.9'
+            --zip-file fileb://python.zip \
+            --compatible-runtimes python3.9
+          latest_layer_arn=$(aws lambda list-layer-versions --layer-name my-layer --query 'LayerVersions[0].LayerVersionArn' --output text)
+      
+      - name: Connect Lambda function and layer
+        run: |
+          aws lambda update-function-configuration \
+            --function-name gitRepoTest
+            --layers $latest_layer_arn
