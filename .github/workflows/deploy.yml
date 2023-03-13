@@ -45,11 +45,12 @@ jobs:
 
       - name: Deploy Lambda layer
         run: |
-          aws lambda publish-layer-version \
+          echo "latest_layer_arn=$(aws lambda publish-layer-version \
             --layer-name testLayer \
             --zip-file fileb://python.zip \
-            --compatible-runtimes python3.9
-          echo "latest_layer_arn=$(aws lambda publish-layer-version --layer-name testLayer --query 'LayerVersionArn' --output text)" >> $GITHUB_ENV
+            --compatible-runtimes python3.9 \
+            --query 'LayerVersionArn' \
+            --output text)" >> $GITHUB_ENV
       
       - name: Connect Lambda function and layer
         run: |
