@@ -1,4 +1,4 @@
 requests-toolbelt==0.10.1
 requests==2.27.1
 python-magic==0.4.27
-libmagic==1.0
+libmagic1
