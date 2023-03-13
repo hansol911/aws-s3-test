@@ -40,20 +40,20 @@ jobs:
         run: |
           cd source/micehubUpload/function
           zip -r ../function.zip ./*
-          cd ../..
+          cd ..
 
       - name: Deploy Lambda function
         run: |
           aws lambda update-function-code \
             --function-name gitRepoTest \
-            --zip-file fileb://source/micehubUpload/function.zip \
+            --zip-file fileb://function.zip \
             --publish
 
       - name: Deploy Lambda layer
         run: |
           echo "latest_layer_arn=$(aws lambda publish-layer-version \
             --layer-name testLayer \
-            --zip-file fileb://soure/micehubUpload/python.zip \
+            --zip-file fileb://python.zip \
             --compatible-runtimes python3.9 \
             --query 'LayerVersionArn' \
             --output text)" >> $GITHUB_ENV
