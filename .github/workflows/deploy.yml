@@ -38,6 +38,7 @@ jobs:
 
       - name: Package function code
         run: |
+          pwd
           cd function
           zip -r ../function.zip ./*
           cd ../..
