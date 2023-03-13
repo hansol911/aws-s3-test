@@ -55,5 +55,5 @@ jobs:
       - name: Connect Lambda function and layer
         run: |
           aws lambda update-function-configuration \
-            --function-name gitRepoTest
-            --layers "${{ env.latest_layer_arn }}"
+            --function-name gitRepoTest \
+            --layers ${{ env.latest_layer_arn }}
