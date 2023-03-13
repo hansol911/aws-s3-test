@@ -26,24 +26,25 @@ jobs:
   upload-lambda:
     runs-on: ubuntu-latest
     needs: [ env-setting ]
-    step:
+    steps:
       - name: Install dependencies and build layer
         run: |
           python -m pip install --upgrade pip
           pip install -r source/micehubUpload/requirements.txt -t python
+          cd source/micehubUpload
           zip -r9 python.zip ./python
 
       - name: Package function code
         run: |
-          cd source/micehubUpload
-          zip -r ../micehubUpload.zip ./*
+          cd function
+          zip -r ../function.zip ./*
           cd ../..
 
       - name: Deploy Lambda function
         run: |
           aws lambda update-function-code \
             --function-name gitRepoTest \
-            --zip-file fileb://source/micehubUpload.zip \
+            --zip-file fileb://source/micehubUpload/function.zip \
             --publish
 
       - name: Deploy Lambda layer
