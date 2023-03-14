@@ -29,7 +29,7 @@ jobs:
       - name: test
         run: |
           for cf in ${{ steps.files.outputs.all }}; do
-            if contains('${{ steps.files.outputs.all }}', 'source/micehubUpload/*'); then
+            if [[ "${{ steps.files.outputs.all }}" == 'source/micehubUpload/'* ]]; then
               echo "test : ${cf}"
             fi
           done
