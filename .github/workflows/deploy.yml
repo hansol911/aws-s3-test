@@ -20,7 +20,7 @@ jobs:
         run: echo "${{ toJson(github) }}"
 
   upload-lambda:
-    if: git diff --name-only HEAD^..HEAD | grep '^source/micehubUpload/'
+    if: contains(github.event.head_commit.modified, 'source/micehubUpload/')
     runs-on: ubuntu-latest
     needs: [ env-setting ]
     steps:
@@ -50,7 +50,7 @@ jobs:
       
       # Deploy layer
       - name: Install dependencies and build layer
-        if: git diff --name-only HEAD^..HEAD | grep '^source/micehubUpload/requirements.txt'
+        if: contains(github.event.head_commit.modified, 'source/micehubUpload/requirements.txt')
         run: |
           python -m pip install --upgrade pip
           cd source/micehubUpload
@@ -62,7 +62,7 @@ jobs:
           echo "latest_upload_layer_arn=" >> $GITHUB_ENV
 
       - name: Deploy Lambda layer
-        if: git diff --name-only HEAD^..HEAD | grep '^source/micehubUpload/requirements.txt'
+        if: contains(github.event.head_commit.modified, 'source/micehubUpload/requirements.txt')        
         run: |
           cd source/micehubUpload
           echo "latest_upload_layer_arn=$(aws lambda publish-layer-version \
@@ -74,14 +74,14 @@ jobs:
       
       # Connect function code and layer
       - name: Connect Lambda function and layer
-        if: git diff --name-only HEAD^..HEAD | grep '^source/micehubUpload/requirements.txt'
+        if: contains(github.event.head_commit.modified, 'source/micehubUpload/requirements.txt')
         run: |
           aws lambda update-function-configuration \
             --function-name gitRepoTest \
             --layers ${{ env.latest_upload_layer_arn }}
     
   thumb-lambda:
-    if: git diff --name-only HEAD^..HEAD | grep '^source/micehubThumb/'
+    if: contains(github.event.head_commit.modified, 'source/micehubThumb/')
     runs-on: ubuntu-latest
     needs: [ env-setting ]
     steps:
@@ -111,7 +111,7 @@ jobs:
       
       # Deploy layer
       - name: Install dependencies and build layer
-        if: git diff --name-only HEAD^..HEAD | grep '^source/micehubThumb/requirements.txt'
+        if: contains(github.event.head_commit.modified, 'source/micehubThumb/requirements.txt')
         run: |
           python -m pip install --upgrade pip
           cd source/micehubThumb
@@ -123,7 +123,7 @@ jobs:
           echo "latest_thumb_layer_arn=" >> $GITHUB_ENV
 
       - name: Deploy Lambda layer
-        if: git diff --name-only HEAD^..HEAD | grep '^source/micehubThumb/requirements.txt'
+        if: contains(github.event.head_commit.modified, 'source/micehubThumb/requirements.txt')
         run: |
           cd source/micehubThumb
           echo "latest_thumb_layer_arn=$(aws lambda publish-layer-version \
@@ -135,7 +135,7 @@ jobs:
       
       # Connect function code and layer
       - name: Connect Lambda function and layer
-        if: git diff --name-only HEAD^..HEAD | grep '^source/micehubThumb/requirements.txt'
+        if: contains(github.event.head_commit.modified, 'source/micehubThumb/requirements.txt')
         run: |
           aws lambda update-function-configuration \
             --function-name gitThumbTest \
