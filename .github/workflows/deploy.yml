@@ -18,7 +18,7 @@ jobs:
       
       - name: print
         run: |
-          for file in ${{ github.event.head_commit.modified }}; do
+          for file in github.event.head_commit.modified; do
             echo $file
           done
   
