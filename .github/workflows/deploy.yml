@@ -9,8 +9,6 @@ on:
 jobs:
   env-setting:
     runs-on: ubuntu-latest
-    outputs:
-      change-files: ${{ env.CHANGE_FILES }}
     steps:
       - name: Checkout source code
         uses: actions/checkout@v2
@@ -26,14 +24,18 @@ jobs:
       - name: print
         run: |
           for changed_file in ${{ steps.files.outputs.all }}; do
-            echo "CHANGE_FILES=${changed_file}" >> $GITHUB_ENV
+            echo "::set-output name=CHANGE_FILES::$changed_file"
+            echo "::add-mask::$changed_file"
           done
 
   upload-lambda:
-    if: contains(${{ needs.env-setting.outputs.change-files }}, 'source/micehubUpload/*')
+    if: contains(${{ env.CHANGE_FILES }}, 'source/micehubUpload/*')
     runs-on: ubuntu-latest
     needs: [ env-setting ]
     steps:
+      - name: print
+        run: echo ${{ env.CHANGE_FILES }}
+
       - name: Checkout source code
         uses: actions/checkout@v2
 
@@ -60,7 +62,7 @@ jobs:
       
       # Deploy layer
       - name: Install dependencies and build layer
-        if: contains(${{ needs.env-setting.outputs.change-files }}, 'source/micehubUpload/requirements.txt')
+        if: contains(${{ env.CHANGE_FILES }}, 'source/micehubUpload/requirements.txt')
         run: |
           python -m pip install --upgrade pip
           cd source/micehubUpload
@@ -72,7 +74,7 @@ jobs:
           echo "latest_upload_layer_arn=" >> $GITHUB_ENV
 
       - name: Deploy Lambda layer
-        if: contains(${{ needs.env-setting.outputs.change-files }}, 'source/micehubUpload/requirements.txt')        
+        if: contains(${{ env.CHANGE_FILES }}, 'source/micehubUpload/requirements.txt')        
         run: |
           cd source/micehubUpload
           echo "latest_upload_layer_arn=$(aws lambda publish-layer-version \
@@ -84,14 +86,14 @@ jobs:
       
       # Connect function code and layer
       - name: Connect Lambda function and layer
-        if: contains(${{ needs.env-setting.outputs.change-files }}, 'source/micehubUpload/requirements.txt')
+        if: contains(${{ env.CHANGE_FILES }}, 'source/micehubUpload/requirements.txt')
         run: |
           aws lambda update-function-configuration \
             --function-name gitRepoTest \
             --layers ${{ env.latest_upload_layer_arn }}
     
   thumb-lambda:
-    if: contains(${{ needs.env-setting.outputs.change-files }}, 'source/micehubThumb/*')
+    if: contains(${{ env.CHANGE_FILES }}, 'source/micehubThumb/*')
     runs-on: ubuntu-latest
     needs: [ env-setting ]
     steps:
@@ -121,7 +123,7 @@ jobs:
       
       # Deploy layer
       - name: Install dependencies and build layer
-        if: contains(${{ needs.env-setting.outputs.change-files }}, 'source/micehubThumb/requirements.txt')
+        if: contains(${{ env.CHANGE_FILES }}, 'source/micehubThumb/requirements.txt')
         run: |
           python -m pip install --upgrade pip
           cd source/micehubThumb
@@ -133,7 +135,7 @@ jobs:
           echo "latest_thumb_layer_arn=" >> $GITHUB_ENV
 
       - name: Deploy Lambda layer
-        if: contains(${{ needs.env-setting.outputs.change-files }}, 'source/micehubThumb/requirements.txt')
+        if: contains(${{ env.CHANGE_FILES }}, 'source/micehubThumb/requirements.txt')
         run: |
           cd source/micehubThumb
           echo "latest_thumb_layer_arn=$(aws lambda publish-layer-version \
@@ -145,7 +147,7 @@ jobs:
       
       # Connect function code and layer
       - name: Connect Lambda function and layer
-        if: contains(${{ needs.env-setting.outputs.change-files }}, 'source/micehubThumb/requirements.txt')
+        if: contains(${{ env.CHANGE_FILES }}, 'source/micehubThumb/requirements.txt')
         run: |
           aws lambda update-function-configuration \
             --function-name gitThumbTest \
