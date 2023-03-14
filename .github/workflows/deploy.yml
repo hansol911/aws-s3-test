@@ -103,7 +103,7 @@ jobs:
 
       - name: Declare layer variable
         run: |
-          echo "echo "latest_thumb_layer_arn=''" >> $GITHUB_ENV
+          echo "latest_thumb_layer_arn=''" >> $GITHUB_ENV
 
       - name: Deploy Lambda layer
         if: contains(github.event.head_commit.modified, 'source/micehubThumb/requirements.txt')
