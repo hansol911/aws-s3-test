@@ -28,6 +28,7 @@ jobs:
 
       - name: confirm
         run: |
+          echo "${{ env.CHANGE_FILES }}" | xargs printf "Type: %s\n"
           echo "Change files: ${{ env.CHANGE_FILES }}"
 
   upload-lambda:
