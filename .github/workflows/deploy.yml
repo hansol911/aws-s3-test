@@ -17,11 +17,8 @@ jobs:
           python-version: "3.9"
       
       - name: print
-        run: |
-          for file in github.event.head_commit.modified; do
-            echo $file
-          done
-  
+        run: echo "${{ toJson(github.event) }}"
+
   upload-lambda:
     if: contains(github.event.head_commit.modified, 'source/micehubUpload/')
     runs-on: ubuntu-latest
