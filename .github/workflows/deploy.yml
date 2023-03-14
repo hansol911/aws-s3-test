@@ -30,13 +30,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Install dependencies and build layer
-        run: |
-          python -m pip install --upgrade pip
-          cd source/micehubUpload
-          pip install -r requirements.txt -t python
-          zip -r9 python.zip ./python
-
+      # Deploy function code
       - name: Package function code
         run: |
           cd source/micehubUpload/function
@@ -49,8 +43,22 @@ jobs:
             --function-name gitRepoTest \
             --zip-file fileb://function.zip \
             --publish
+      
+      # Deploy layer
+      - name: Install dependencies and build layer
+        if: contains(github.event.head_commit.modified, 'source/micehubUpload/requirements.txt')
+        run: |
+          python -m pip install --upgrade pip
+          cd source/micehubUpload
+          pip install -r requirements.txt -t python
+          zip -r9 python.zip ./python
+      
+      - name: Declare layer variable
+        run: |
+          echo "latest_upload_layer_arn=" >> $GITHUB_ENV
 
       - name: Deploy Lambda layer
+        if: contains(github.event.head_commit.modified, 'source/micehubUpload/requirements.txt')
         run: |
           cd source/micehubUpload
           echo "latest_upload_layer_arn=$(aws lambda publish-layer-version \
@@ -60,7 +68,9 @@ jobs:
             --query 'LayerVersionArn' \
             --output text)" >> $GITHUB_ENV
       
+      # Connect function code and layer
       - name: Connect Lambda function and layer
+        if: contains(github.event.head_commit.modified, 'source/micehubUpload/requirements.txt')
         run: |
           aws lambda update-function-configuration \
             --function-name gitRepoTest \
@@ -80,6 +90,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
+      # Deploy function code
       - name: Package function code
         run: |
           cd source/micehubThumb/function
@@ -93,6 +104,7 @@ jobs:
             --zip-file fileb://function.zip \
             --publish
       
+      # Deploy layer
       - name: Install dependencies and build layer
         if: contains(github.event.head_commit.modified, 'source/micehubThumb/requirements.txt')
         run: |
@@ -103,7 +115,7 @@ jobs:
 
       - name: Declare layer variable
         run: |
-          echo "latest_thumb_layer_arn=''" >> $GITHUB_ENV
+          echo "latest_thumb_layer_arn=" >> $GITHUB_ENV
 
       - name: Deploy Lambda layer
         if: contains(github.event.head_commit.modified, 'source/micehubThumb/requirements.txt')
@@ -116,7 +128,9 @@ jobs:
             --query 'LayerVersionArn' \
             --output text)" >> $GITHUB_ENV
       
+      # Connect function code and layer
       - name: Connect Lambda function and layer
+        if: contains(github.event.head_commit.modified, 'source/micehubThumb/requirements.txt')
         run: |
           aws lambda update-function-configuration \
             --function-name gitThumbTest \
