@@ -26,6 +26,12 @@ jobs:
       - name: print
         run: echo "CHANGE_FILES=${{ steps.files.outputs.all }}" >> $GITHUB_ENV
 
+      - name: test
+        run: |
+          for cf in ${{ steps.files.outputs.all }}; do
+            echo "test : ${cf}"
+          done
+
   upload-lambda:
     runs-on: ubuntu-latest
     needs: [ env-setting ]
