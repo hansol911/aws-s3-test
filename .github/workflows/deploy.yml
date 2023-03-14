@@ -29,7 +29,7 @@ jobs:
       - name: test
         run: |
           for cf in ${{ steps.files.outputs.all }}; do
-            if contains([${{ steps.files.outputs.all }}], 'source/micehubUpload/*'); then
+            if contains('${{ steps.files.outputs.all }}', 'source/micehubUpload/*'); then
               echo "test : ${cf}"
             fi
           done
@@ -43,11 +43,11 @@ jobs:
       - name: print
         run: |
           for file in ${{ needs.env-setting.outputs.change-files }}; do
-            if contains(${{ needs.env-setting.outputs.change-files }}, 'source/micehubUpload/*'); then          
+            if contains('${{ needs.env-setting.outputs.change-files }}', 'source/micehubUpload/*'); then          
               echo "micehubUpload : ${file}"
-            elif contains(${{ needs.env-setting.outputs.change-files }}, 'source/micehubThumb/*'); then   
+            elif contains('${{ needs.env-setting.outputs.change-files }}', 'source/micehubThumb/*'); then   
               echo "micehubThumb : ${file}"
-            elif contains(${{ needs.env-setting.outputs.change-files }}, 'source/micehubThumb/requirements.txt'); then
+            elif contains('${{ needs.env-setting.outputs.change-files }}', 'source/micehubThumb/requirements.txt'); then
               echo "requirements : ${file}"
             else
               echo "error"
