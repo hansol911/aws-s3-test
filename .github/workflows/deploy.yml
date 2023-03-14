@@ -94,20 +94,6 @@ jobs:
     if: ${{ contains(needs.env-setting.outputs.change-files, 'source/micehubThumb/') }}
 
     steps:
-      - name: print
-        run: |
-          for file in ${{ needs.env-setting.outputs.change-files }}; do
-            if [[ '${{ needs.env-setting.outputs.change-files }}' == *'source/micehubUpload/'* ]]; then          
-              echo "micehubUpload : ${file}"
-            fi
-            if [[ '${{ needs.env-setting.outputs.change-files }}' == *'source/micehubThumb/'* ]]; then   
-              echo "micehubThumb : ${file}"
-            fi
-            if [[ '${{ needs.env-setting.outputs.change-files }}' == *'source/micehubThumb/requirements.txt'* ]]; then
-              echo "requirements : ${file}"
-            fi
-          done 
-
       - name: Checkout source code
         uses: actions/checkout@v2
 
