@@ -29,6 +29,10 @@ jobs:
             echo "CHANGE_FILES=${changed_file}" >> $GITHUB_ENV
           done
 
+      - name: confirm
+        run: |
+          echo "Change files: ${{ env.CHANGE_FILES }}"
+
   upload-lambda:
     if: change=$(echo "${{ needs.env-settig.outputs.change-files }}" | grep -c '^source/micehubUpload/')
     runs-on: ubuntu-latest
