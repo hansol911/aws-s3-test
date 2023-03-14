@@ -16,8 +16,14 @@ jobs:
         with:
           python-version: "3.9"
       
+      - id: files
+        uses: jitterbit/get-changed-files@v1
+
       - name: print
-        run: echo "${{ toJson(github) }}"
+        run: |
+          for changed_file in ${{ steps.files.outputs.all }}; do
+            echo "Do something with this ${changed_file}."
+          done
 
   upload-lambda:
     if: contains(github.event.head_commit.modified, 'source/micehubUpload/')
