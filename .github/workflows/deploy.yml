@@ -37,7 +37,10 @@ jobs:
     needs: [ env-setting ]
     steps:
       - name: print
-        run: echo ${{ needs.env-setting.outputs.change-files }}
+        run: |
+          for file in ${{ needs.env-setting.outputs.change-files }}; do
+            echo "${file}"
+          done 
 
       - name: Checkout source code
         uses: actions/checkout@v2
