@@ -32,9 +32,10 @@ jobs:
           echo "Change files: ${{ env.CHANGE_FILES }}"
 
   upload-lambda:
-    if: contains(${{ needs.env-setting.outputs.change-files }}, 'source/micehubUpload/*')
     runs-on: ubuntu-latest
     needs: [ env-setting ]
+    if: contains(${{ needs.env-setting.outputs.change-files }}, 'source/micehubUpload/*')
+    
     steps:
       - name: print
         run: |
@@ -99,9 +100,10 @@ jobs:
             --layers ${{ env.latest_upload_layer_arn }}
     
   thumb-lambda:
-    if: contains(${{ needs.env-setting.outputs.change-files }}, 'source/micehubThumb/*')
     runs-on: ubuntu-latest
     needs: [ env-setting ]
+    if: contains(${{ needs.env-setting.outputs.change-files }}, 'source/micehubThumb/*')
+
     steps:
       - name: print
         run: echo ${{ needs.env-setting.outputs.change-files }}
