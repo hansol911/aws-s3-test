@@ -26,7 +26,7 @@ jobs:
       - name: print
         run: |
           for changed_file in ${{ steps.files.outputs.all }}; do
-            echo "CHANGE_FILES=$changed_file" >> $GITHUB_ENV
+            echo "CHANGE_FILES=${changed_file}" >> $GITHUB_ENV
           done
 
   upload-lambda:
