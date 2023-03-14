@@ -112,7 +112,7 @@ jobs:
   thumb-lambda:
     runs-on: ubuntu-latest
     needs: [ env-setting ]
-    if: '${{ needs.env-setting.outputs.change-files }}' == *'source/micehubThumb/'*
+    if: "${{ needs.env-setting.outputs.change-files }}" == *'source/micehubThumb/'*
 
     steps:
       - name: print
