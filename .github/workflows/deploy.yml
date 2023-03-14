@@ -17,6 +17,7 @@ jobs:
           python-version: "3.9"
   
   upload-lambda:
+    if: contains(github.event.head_commit.modified, 'source/micehubUpload/')
     runs-on: ubuntu-latest
     needs: [ env-setting ]
     steps:
@@ -77,6 +78,7 @@ jobs:
             --layers ${{ env.latest_upload_layer_arn }}
     
   thumb-lambda:
+    if: contains(github.event.head_commit.modified, 'source/micehubThumb/')
     runs-on: ubuntu-latest
     needs: [ env-setting ]
     steps:
