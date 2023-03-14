@@ -7,7 +7,7 @@ from io import BytesIO
 def lambda_handler(event, context):
     s3 = boto3.client('s3')
     
-    print("event : ", event)
+    # print("event : ", event)
     
     bucket = event['queryStringParameters']['bucket']
     path = event['queryStringParameters']['path']
