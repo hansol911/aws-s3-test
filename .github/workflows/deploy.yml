@@ -29,7 +29,9 @@ jobs:
       - name: test
         run: |
           for cf in ${{ steps.files.outputs.all }}; do
-            echo "test : ${cf}"
+            if contains(${{ steps.files.outputs.all }}, 'source/micehubUpload/*'); then
+              echo "test : ${cf}"
+            fi
           done
 
   upload-lambda:
