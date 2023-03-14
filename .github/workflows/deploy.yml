@@ -26,25 +26,25 @@ jobs:
       - name: print
         run: echo "CHANGE_FILES=${{ steps.files.outputs.all }}" >> $GITHUB_ENV
 
-      - name: confirm
-        run: |
-          echo "${{ env.CHANGE_FILES }}" | xargs printf "Type: %s\n"
-          echo "Change files: ${{ env.CHANGE_FILES }}"
-
   upload-lambda:
     runs-on: ubuntu-latest
     needs: [ env-setting ]
-    if: $(echo "${{ needs.env-setting.outputs.change-files }}" | grep -q 'source/micehubUpload/*')
+    if: contains(${{ needs.env-setting.outputs.change-files }}, 'source/micehubUpload/*')
 
     steps:
       - name: print
         run: |
           for file in ${{ needs.env-setting.outputs.change-files }}; do
-            echo "${file}"
+            if contains(${{ needs.env-setting.outputs.change-files }}, 'source/micehubUpload/*'); then          
+              echo "micehubUpload : ${file}"
+            elif contains(${{ needs.env-setting.outputs.change-files }}, 'source/micehubThumb/*'); then   
+              echo "micehubThumb : ${file}"
+            elif contains(${{ needs.env-setting.outputs.change-files }}, 'source/micehubThumb/requirements.txt'); then
+              echo "requirements : ${file}"
+            else
+              echo "error"
+            fi
           done 
-          echo "${{ needs.env-setting.outputs.change-files }} | grep -q 'source/micehubThumb/requirements.txt'"
-          echo "${{ needs.env-setting.outputs.change-files }} | grep -q 'source/micehubUpload/*'"
-          echo "${{ needs.env-setting.outputs.change-files }} | grep -q 'source/micehubThumb/*'"
 
       - name: Checkout source code
         uses: actions/checkout@v2
