@@ -17,7 +17,7 @@ jobs:
           python-version: "3.9"
       
       - name: print
-        run: echo "${{ toJson(github.event) }}"
+        run: echo "${{ toJson(github) }}"
 
   upload-lambda:
     if: git diff --name-only HEAD^..HEAD | grep '^source/micehubUpload/'
