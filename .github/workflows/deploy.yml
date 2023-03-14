@@ -42,9 +42,9 @@ jobs:
           for file in ${{ needs.env-setting.outputs.change-files }}; do
             echo "${file}"
           done 
-          echo contains(${{ needs.env-setting.outputs.change-files }}, 'source/micehubThumb/requirements.txt')
-          echo contains(${{ needs.env-setting.outputs.change-files }}, 'source/micehubUpload/*')
-          echo contains(${{ needs.env-setting.outputs.change-files }}, 'source/micehubThumb/*')
+          echo ${{ needs.env-setting.outputs.change-files }} | grep -q 'source/micehubThumb/requirements.txt'
+          echo ${{ needs.env-setting.outputs.change-files }} | grep -q 'source/micehubUpload/*'
+          echo ${{ needs.env-setting.outputs.change-files }} | grep -q 'source/micehubThumb/*'
 
       - name: Checkout source code
         uses: actions/checkout@v2
